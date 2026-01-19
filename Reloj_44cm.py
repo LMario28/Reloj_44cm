@@ -169,7 +169,7 @@ def actualizarSketch():
   global SSID
   global PASSWD
 
-  firmware_url = "https://raw.githubusercontent.com/LMario28/Reloj_44cm/"
+  firmware_url = "https://github.com/LMario28/Reloj_44cm"
 
   print("*************************")
   print("ACTUALIZANDO SKETCH...")
@@ -480,7 +480,7 @@ while True:
           if (opcion_seleccionada_azar==1):
             bandera()
           bandera_animacion_iniciada = True
-    elif (RTC().datetime()[1]==12 or RTC().datetime()[1]==1):                    # Diciembre|Enero
+    elif (RTC().datetime()[1]==12 or (RTC().datetime()[1]==1 and RTC().datetime()[2]<7)):                    # Diciembre|Enero
       if (RTC().datetime()[5]%2!=0):
         if (not bandera_reloj):                                                  # Reloj
           #timerReloj = timer.set_interval(1,actualizarHora)
