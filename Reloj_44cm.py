@@ -229,16 +229,16 @@ def desplegarEsqueleto():
 #-------------------------------------------------------------------------------
   # MINUTO MINUTO MINUTO
   for i in range(60):
-    pixels[2*i] = (0,4,0)
+    pixels[2*i] = (0,2,0)
 
   # HORA HORA HORA
-  pixels[119] = (10,0,10)                                                         # LED 183
-  pixels[0] = (10,0,10)
-  pixels[1] = (10,0,10)
+  pixels[119] = (5,0,5)                                                         # LED 183
+  pixels[0] = (5,0,5)
+  pixels[1] = (5,0,50)
   for i in range(1,12):
-    pixels[10*i-1] = (10,0,10)
-    pixels[10*i] = (10,0,10)
-    pixels[10*i+1] = (10,0,10)
+    pixels[10*i-1] = (5,0,5)
+    pixels[10*i] = (5,0,5)
+    pixels[10*i+1] = (5,0,5)
 
 #-------------------------------------------------------------------------------
 def desplegarHoraHora():
