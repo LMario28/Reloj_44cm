@@ -27,7 +27,7 @@ import time
 import BlynkLib     # https://github.com/vshymanskyy/blynk-library-python/blob/master/examples/03_sync_virtual.py
 from BlynkTimer_lmms import BlynkTimer
 import network
-from ota_lmms import OTAUpdater
+from ota_deepseek import OTAUpdater
 import random
 import math
 
@@ -163,22 +163,20 @@ def seleccionarMejorRedWiFiDisponible():
         rssiMasFuerte = rssi
     print("Mejor red disponible:",redActiva,"|",SSID,"|",PASSWD)
 
-#-------------------------------------------------------------------------------
 def actualizarSketch():
-#-------------------------------------------------------------------------------
-  global SSID
-  global PASSWD
-
-  firmware_url = "https://github.com/LMario28/Reloj_44cm"
-
-  print("*************************")
-  print("ACTUALIZANDO SKETCH...")
-  try:
-    ota_updater = OTAUpdater(SSID, PASSWD, firmware_url, "Reloj_44cm.py")
-    ota_updater.download_and_install_update_if_available()
-  except:
-    print("NO SE PUDO ACTUALIZAR EL SKETCH")
-  print("*************************")
+    global SSID, PASSWD
+    
+    print("*************************")
+    print("ACTUALIZANDO SKETCH...")
+    try:
+        firmware_url = "https://github.com/LMario28/Reloj_44cm/"
+        ota_updater = OTAUpdater(SSID, PASSWD, firmware_url, "Reloj_44cm.py")
+        ota_updater.download_and_install_update_if_available()
+    except Exception as e:
+        print(f"ERROR: {e}")
+        import sys
+        sys.print_exception(e)
+    print("*************************")
 
 #-------------------------------------------------------------------------------
 def desplegarMensajeVisual(tipLla):
@@ -436,6 +434,10 @@ def on_utc(value):
 #///////////////////////////////////////////////////////////////////////////////
 def proceso():
   pass
+
+print("****************************************")
+print("Versión 4 del programa")
+print("****************************************")
 
 diaInicial=RTC().datetime()[2]
 opcionSeleccionadaAzar=0
