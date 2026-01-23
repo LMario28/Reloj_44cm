@@ -36,7 +36,7 @@ from machine import WDT
 #///////////////////////////////////////////////////////////////////////////////
 #/                               CONSTANTES                                   //
 #///////////////////////////////////////////////////////////////////////////////
-WIFI_SSID = ['INFINITUM2426_2.4','Electronica Hotspot PC','TP-Link_lmmsegura']
+WIFI_SSID = ['INFINITUM2426_2.4','Electronica Hotspot PC','TP-Link_LMario']
 WIFI_PASS = ['CNnC917MDE','electronica23','lmario28']
 SSID=''
 PASSWD=''
@@ -163,20 +163,22 @@ def seleccionarMejorRedWiFiDisponible():
         rssiMasFuerte = rssi
     print("Mejor red disponible:",redActiva,"|",SSID,"|",PASSWD)
 
+#-------------------------------------------------------------------------------
 def actualizarSketch():
-    global SSID, PASSWD
-    
-    print("*************************")
-    print("ACTUALIZANDO SKETCH...")
-    try:
-        firmware_url = "https://github.com/LMario28/Reloj_44cm/"
-        ota_updater = OTAUpdater(SSID, PASSWD, firmware_url, "Reloj_44cm.py")
-        ota_updater.download_and_install_update_if_available()
-    except Exception as e:
-        print(f"ERROR: {e}")
-        import sys
-        sys.print_exception(e)
-    print("*************************")
+#-------------------------------------------------------------------------------
+  global SSID
+  global PASSWD
+
+  firmware_url = "https://raw.githubusercontent.com/LMario28/Reloj_44cm/"
+
+  print("*************************")
+  print("ACTUALIZANDO SKETCH...")
+  try:
+    ota_updater = OTAUpdater(SSID, PASSWD, firmware_url, "Reloj_44cm.py")
+    ota_updater.download_and_install_update_if_available()
+  except:
+    print("NO SE PUDO ACTUALIZAR EL SKETCH")
+  print("*************************")
 
 #-------------------------------------------------------------------------------
 def desplegarMensajeVisual(tipLla):
@@ -229,16 +231,17 @@ def desplegarEsqueleto():
 #-------------------------------------------------------------------------------
   # MINUTO MINUTO MINUTO
   for i in range(60):
-    pixels[2*i] = (0,2,0)
+    pixels[2*i] = (0,4,0)
 
   # HORA HORA HORA
-  pixels[119] = (5,0,5)                                                         # LED 183
-  pixels[0] = (5,0,5)
-  pixels[1] = (5,0,50)
+  pixels[119] = (10,0,10)                                                         # LED 183
+  pixels[0] = (10,0,10)
+  pixels[1] = (10,0,10)
   for i in range(1,12):
-    pixels[10*i-1] = (5,0,5)
-    pixels[10*i] = (5,0,5)
-    pixels[10*i+1] = (5,0,5)
+    pixels[10*i-1] = (10,0,10)
+    pixels[10*i] = (10,0,10)
+    pixels[10*i+1] = (10,0,10)
+  print(f"Desplegada la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}:{RTC().datetime()[6]}")
 
 #-------------------------------------------------------------------------------
 def desplegarHoraHora():
@@ -361,12 +364,19 @@ print("Connecting to WiFi network '{}'".format(SSID))
 wifi = network.WLAN(network.STA_IF)
 wifi.active(True)
 wifi.connect(SSID,PASSWD)
+if(SSID=="TP-Link_LMario"):
+  wifi.ifconfig(("192.168.40.238", "255.255.255.0", "192.168.40.1", "4.2.2.2"))
 while not wifi.isconnected():
   time.sleep(5)
   if (WATCHDOG):
     wdt.feed()
   print('WiFi connect retry ...')
-print('WiFi IP:', wifi.ifconfig()[0])
+print("conectado a:")
+print("IP:", wifi.ifconfig()[0])
+print("Netmask:", wifi.ifconfig()[1])
+print("Gateway:", wifi.ifconfig()[2])
+print("DNS:", wifi.ifconfig()[3])
+
 actualizarSketch()
 
 print("Connecting to Blynk server...")
@@ -434,10 +444,6 @@ def on_utc(value):
 #///////////////////////////////////////////////////////////////////////////////
 def proceso():
   pass
-
-print("****************************************")
-print("Versión 4 del programa")
-print("****************************************")
 
 diaInicial=RTC().datetime()[2]
 opcionSeleccionadaAzar=0
