@@ -36,8 +36,10 @@ from machine import WDT
 #///////////////////////////////////////////////////////////////////////////////
 #/                               CONSTANTES                                   //
 #///////////////////////////////////////////////////////////////////////////////
-WIFI_SSID = ['INFINITUM2426_2.4','Electronica Hotspot PC','TP-Link_LMario']
-WIFI_PASS = ['CNnC917MDE','electronica23','lmario28']
+WIFI_SSID = ['INFINITUM2426_2.4','Extensor Sala','Extensor_Patio',  \
+             'Electronica Hotspot PC','TP-Link_LMario']
+WIFI_PASS = ['CNnC917MDE','CNnC917MDE','CNnC917MDE',                \
+             'electronica23','lmario28']
 SSID=''
 PASSWD=''
 BLYNK_AUTH = 'AeC4cVG45H4nmiq6g-nFef9-VNfJItuB'
