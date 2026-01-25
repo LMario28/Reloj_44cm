@@ -36,6 +36,7 @@ from machine import WDT
 #///////////////////////////////////////////////////////////////////////////////
 #/                               CONSTANTES                                   //
 #///////////////////////////////////////////////////////////////////////////////
+BANDERA_DESARROLLO=True
 WIFI_SSID = ['INFINITUM2426_2.4','Extensor Sala','Extensor_Patio',  \
              'Electronica Hotspot PC','TP-Link_LMario']
 WIFI_PASS = ['CNnC917MDE','CNnC917MDE','CNnC917MDE',                \
@@ -155,34 +156,32 @@ def seleccionarMejorRedWiFiDisponible():
 
   authmodes = ['Open', 'WEP', 'WPA-PSK' 'WPA2-PSK4', 'WPA/WPA2-PSK']
   redesWiFiDisponibles = wiFi.scan()
-  print("Número de redes disponibles:",redesWiFiDisponibles)
+  if BANDERA_DESARROLLO:
+    print(redesWiFiDisponibles)
+  rssiMasFuerte = -999
   for (ssid, bssid, channel, RSSI, authmode, hidden) in redesWiFiDisponibles:
-    print("* {:s}".format(ssid))
-    print("   - Auth: {} {}".format(authmodes[authmode], '(hidden)' if hidden else ''))
-    print("   - Channel: {}".format(channel))
-    print("   - RSSI: {}".format(RSSI))
-    print("   - BSSID: {:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(*bssid))
-    print()
-
-  rssiMasFuerte = 999
-  for redWiFi in redesWiFiDisponibles:
-    #print ("> " + str(redWiFi[0],"utf-8"))
-    #print ("> " + str(redWiFi[3]))
-    ssid = str(redWiFi[0],"utf-8")
+    ssidLocal="{:s}".format(ssid)
     try:
-      indiceRed = WIFI_SSID.index(ssid)
+      indiceRed=WIFI_SSID.index(ssidLocal)
+      rssiLocal="{}".format(RSSI)
+      rssiLocal = int(rssiLocal)
     except ValueError:
       continue
-
-    SSID = ssid
-    PASSWD = WIFI_PASS[indiceRed]
-    redActiva = indiceRed + 1
-      
-    if rssiMasFuerte!=999:
-      rssi = str(redWiFi[3])
-      if rssi<rssiMasFuerte:
-        rssiMasFuerte = rssi
-    print("Mejor red disponible:",redActiva,"|",SSID,"|",PASSWD)
+    if(int(rssiLocal)>rssiMasFuerte):
+      SSID = ssidLocal
+      PASSWD = WIFI_PASS[indiceRed]
+      redActiva = indiceRed + 1
+      rssiMasFuerte = rssiLocal
+        
+    if BANDERA_DESARROLLO:
+      print(ssidLocal)
+      #print("   - Auth: {} {}".format(authmodes[authmode], '(hidden)' if hidden else ''))
+      #print("   - Channel: {}".format(channel))
+      print("   - RSSI: {}".format(RSSI))
+      #print("   - BSSID: {:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(*bssid))
+      print()
+  if BANDERA_DESARROLLO:
+    print("Mejor red disponible:",SSID,"|",PASSWD)
 
 #-------------------------------------------------------------------------------
 def actualizarSketch():
