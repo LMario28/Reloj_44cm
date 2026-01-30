@@ -24,7 +24,7 @@ from machine import Pin
 import neopixel
 import time
 
-import BlynkLib     # https://github.com/vshymanskyy/blynk-library-python/blob/master/examples/03_sync_virtual.py
+import BlynkLib_deepseek     # https://github.com/vshymanskyy/blynk-library-python/blob/master/examples/03_sync_virtual.py
 from BlynkTimer_lmms import BlynkTimer
 import network
 from ota_deepseek import OTAUpdater
@@ -241,7 +241,8 @@ def desplegarEsqueleto():
     pixels[10*i-1] = (10,0,10)
     pixels[10*i] = (10,0,10)
     pixels[10*i+1] = (10,0,10)
-  print(f"Desplegada la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}:{RTC().datetime()[6]}")
+  if(RTC().datetime()[6]==0):
+    print(f"Desplegada la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}")
 
 #-------------------------------------------------------------------------------
 def desplegarHoraHora():
@@ -361,7 +362,7 @@ def apagar_todos_leds():
 def proceso():
   pass
 
-print("Versión del programa: 7")
+print("Versión del programa: 3")
 
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
@@ -385,7 +386,7 @@ actualizarSketch()
 
 print("Connecting to Blynk server...")
 #blynk = BlynkLib.Blynk(BLYNK_AUTH,insecure=True)             // Funciona
-blynk = BlynkLib.Blynk(BLYNK_AUTH,server="ny3.blynk.cloud")   # Funciona
+blynk = BlynkLib_deepseek.Blynk(BLYNK_AUTH,server="ny3.blynk.cloud")   # Funciona
 
 # Create BlynkTimer Instance
 timer = BlynkTimer()
@@ -459,12 +460,12 @@ while not banderaHoraRecuperadaBlynk:
   blynk.run()
   timer.run()
 blynk.disconnect()
-wifi.disconnect()
-time.sleep(1)
-if not wifi.isconnected():
-  print("Desconectado de Blynk y WiFi")
-else:
-  print("WiFi connected. Can't disconnect")
+# wifi.disconnect()
+# time.sleep(1)
+# if not wifi.isconnected():
+#   print("Desconectado de Blynk y WiFi")
+# else:
+#   print("WiFi connected. Can't disconnect")
 
 # CICLO INFINITO EN ESPERA POR EVENTOS
 hora_inicial_tarea=time.ticks_ms()-1000
