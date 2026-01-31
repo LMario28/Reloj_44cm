@@ -19,6 +19,8 @@
 
 # 3) Los timers no se borran (pendiente corregir)
 
+# 4) Correr con al menos MicroPython v1.27
+
 import machine
 from machine import Pin
 import neopixel
@@ -36,8 +38,11 @@ from machine import WDT
 #///////////////////////////////////////////////////////////////////////////////
 #/                               CONSTANTES                                   //
 #///////////////////////////////////////////////////////////////////////////////
-WIFI_SSID = ['INFINITUM2426_2.4','Electronica Hotspot PC','TP-Link_LMario']
-WIFI_PASS = ['CNnC917MDE','electronica23','lmario28']
+BANDERA_DESARROLLO=True
+WIFI_SSID = ['INFINITUM2426_2.4','Extensor Sala','Extensor_Patio',  \
+             'Electronica Hotspot PC','TP-Link_LMario']
+WIFI_PASS = ['CNnC917MDE','CNnC917MDE','CNnC917MDE',                \
+             'electronica23','lmario28']
 SSID=''
 PASSWD=''
 BLYNK_AUTH = 'AeC4cVG45H4nmiq6g-nFef9-VNfJItuB'
@@ -49,6 +54,13 @@ LEDs_HORA=10
 LEDs_MINUTO=2
 
 INTERVALO_BASE_ENTRE_TICKS=200                                                      # ms
+
+# Colores Reloj
+COLOR_RELOJ_ESQUELETO_HORAS_MAXIMO=(20,0,20)
+COLOR_RELOJ_ESQUELETO_MINUTOS_MAXIMO=(2,0,2)
+COLOR_RELOJ_HORA_MAXIMO=(255,0,0)
+COLOR_RELOJ_MINUTO_MAXIMO=(0,255,0)
+COLOR_RELOJ_SEGUNDO_MAXIMO=(255,255,0)
 
 # Colores navideños
 ROJO = (255, 0, 0)
@@ -116,6 +128,17 @@ bandera_reloj=True
 bandera_animacion_iniciada=False
 #incrementoDecremento=1
 #contadorAnimaciones=0
+factor_ajuste_brillo=0.25
+color_esqueleto_horas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_ESQUELETO_HORAS_MAXIMO)
+color_esqueleto_horas = tuple(map(round,color_esqueleto_horas))
+color_esqueleto_minutos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_ESQUELETO_MINUTOS_MAXIMO)
+color_esqueleto_minutos = tuple(map(round,color_esqueleto_minutos))
+color_reloj_hora=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_MAXIMO)
+color_reloj_hora = tuple(map(round,color_reloj_hora))
+color_reloj_minuto=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_MAXIMO)
+color_reloj_minuto = tuple(map(round,color_reloj_minuto))
+color_reloj_segundo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_MAXIMO)
+color_reloj_segundo = tuple(map(round,color_reloj_segundo))
 
 offset=0
 
@@ -135,33 +158,32 @@ def seleccionarMejorRedWiFiDisponible():
 
   authmodes = ['Open', 'WEP', 'WPA-PSK' 'WPA2-PSK4', 'WPA/WPA2-PSK']
   redesWiFiDisponibles = wiFi.scan()
-#   for (ssid, bssid, channel, RSSI, authmode, hidden) in redesWiFiDisponibles:
-#     print("* {:s}".format(ssid))
-#     print("   - Auth: {} {}".format(authmodes[authmode], '(hidden)' if hidden else ''))
-#     print("   - Channel: {}".format(channel))
-#     print("   - RSSI: {}".format(RSSI))
-#     print("   - BSSID: {:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(*bssid))
-#     print()
-
-  rssiMasFuerte = 999
-  for redWiFi in redesWiFiDisponibles:
-    #print ("> " + str(redWiFi[0],"utf-8"))
-    #print ("> " + str(redWiFi[3]))
-    ssid = str(redWiFi[0],"utf-8")
+  if BANDERA_DESARROLLO:
+    print(redesWiFiDisponibles)
+  rssiMasFuerte = -999
+  for (ssid, bssid, channel, RSSI, authmode, hidden) in redesWiFiDisponibles:
+    ssidLocal="{:s}".format(ssid)
     try:
-      indiceRed = WIFI_SSID.index(ssid)
+      indiceRed=WIFI_SSID.index(ssidLocal)
+      rssiLocal="{}".format(RSSI)
+      rssiLocal = int(rssiLocal)
     except ValueError:
       continue
-
-    SSID = ssid
-    PASSWD = WIFI_PASS[indiceRed]
-    redActiva = indiceRed + 1
-      
-    if rssiMasFuerte!=999:
-      rssi = str(redWiFi[3])
-      if rssi<rssiMasFuerte:
-        rssiMasFuerte = rssi
-    print("Mejor red disponible:",redActiva,"|",SSID,"|",PASSWD)
+    if(int(rssiLocal)>rssiMasFuerte):
+      SSID = ssidLocal
+      PASSWD = WIFI_PASS[indiceRed]
+      redActiva = indiceRed + 1
+      rssiMasFuerte = rssiLocal
+        
+    if BANDERA_DESARROLLO:
+      print(ssidLocal)
+      #print("   - Auth: {} {}".format(authmodes[authmode], '(hidden)' if hidden else ''))
+      #print("   - Channel: {}".format(channel))
+      print("   - RSSI: {}".format(RSSI))
+      #print("   - BSSID: {:02x}:{:02x}:{:02x}:{:02x}:{:02x}:{:02x}".format(*bssid))
+      print()
+  if BANDERA_DESARROLLO:
+    print("Mejor red disponible:",SSID,"|",PASSWD)
 
 #-------------------------------------------------------------------------------
 def actualizarSketch():
@@ -231,18 +253,17 @@ def desplegarEsqueleto():
 #-------------------------------------------------------------------------------
   # MINUTO MINUTO MINUTO
   for i in range(60):
-    pixels[2*i] = (0,4,0)
+    pixels[2*i] = (0,1,0)
 
   # HORA HORA HORA
-  pixels[119] = (10,0,10)                                                         # LED 183
-  pixels[0] = (10,0,10)
-  pixels[1] = (10,0,10)
+  pixels[119] = color_esqueleto_horas
+  pixels[0] = color_esqueleto_horas
+  pixels[1] = color_esqueleto_horas
   for i in range(1,12):
-    pixels[10*i-1] = (10,0,10)
-    pixels[10*i] = (10,0,10)
-    pixels[10*i+1] = (10,0,10)
-  if(RTC().datetime()[6]==0):
-    print(f"Desplegada la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}")
+    pixels[10*i-1] = color_esqueleto_horas
+    pixels[10*i] = color_esqueleto_horas
+    pixels[10*i+1] = color_esqueleto_horas
+  #print(f"Desplegada la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}:{RTC().datetime()[6]}")
 
 #-------------------------------------------------------------------------------
 def desplegarHoraHora():
@@ -251,9 +272,9 @@ def desplegarHoraHora():
   if(hora>=12):
     hora -= 12
   ledHoraActual = map(3600 * hora + 60 * RTC().datetime()[5] + RTC().datetime()[6], 0, 43200, 0, NUMERO_LEDs_RELOJ) + 1;
-  pixels[ledHoraActual-1] = (255,0,0)
-  pixels[ledHoraActual] = (255,0,0)
-  pixels[ledHoraActual+1] = (255,0,0)
+  pixels[ledHoraActual-1] = color_reloj_hora
+  pixels[ledHoraActual] = color_reloj_hora
+  pixels[ledHoraActual+1] = color_reloj_hora
 
   pixels[LEDs_HORA*redActiva + 2] = (1,1,1)
 
@@ -266,14 +287,14 @@ def map(x, in_min, in_max, out_min, out_max):
 def desplegarHoraMinuto():
 #-------------------------------------------------------------------------------
   ledMinutoActual = RTC().datetime()[5] * LEDs_MINUTO
-  pixels[ledMinutoActual-1] = (0,255,0)
-  pixels[ledMinutoActual] = (0,255,0)
+  pixels[ledMinutoActual-1] = color_reloj_minuto
+  pixels[ledMinutoActual] = color_reloj_minuto
 
 #-------------------------------------------------------------------------------
 def desplegarHoraSegundo():
 #-------------------------------------------------------------------------------
   ledSegundoActual = RTC().datetime()[6] * LEDs_MINUTO
-  pixels[ledSegundoActual] = (255,255,0)
+  pixels[ledSegundoActual] = color_reloj_segundo
 
 #///////////////////////////////////////////////////////////////////////////////
 #/                              LUCES NAVIDEÑAS                               //
@@ -358,11 +379,10 @@ def apagar_todos_leds():
 #///////////////////////////////////////////////////////////////////////////////
 #/ PROCESO   PROCESO   PROCESO   PROCESO   PROCESO   PROCESO   PROCESO        //
 #///////////////////////////////////////////////////////////////////////////////
-
 def proceso():
   pass
 
-print("Versión del programa: 3")
+print("Versión del programa: 7")
 
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
@@ -412,17 +432,15 @@ def on_utc(value):
 
   if value[0] == "time":
     ts = int(value[1])//1000
-    # on embedded systems, you may need to subtract time difference between 1970 and 2000
-    ts -= 946684800
-    # Ajuste por zona
-    ts += 3600 * ZONA_MEXICO
     tiempoLocal = time.localtime(ts)
-    # Año, mes (1-12), día del mes (1-31), hora (0-23), minuto (0-59), segundo (0-59), día de
-    # la semana (0-6 de lunes a domingo), día de año (1-366)
+    print("Tiempo UTC:", tiempoLocal)
+    # Año[0], mes[1] (1-12), día del mes[2] (1-31), hora[3] (0-23), minuto[4] (0-59), segundo[5] (0-59), día de
+    # la semana[6] (0-6 de lunes a domingo), día de año[7] (1-366)
     # SINCRONIZACIÓN DEL RELOJ INTERNO E IMPRESIÓN DE FECHA Y HORA
-    #RTC().init((year, month, mday, weekday, hour, minute, second, milisecond))
-    RTC().init((tiempoLocal[0], tiempoLocal[1], tiempoLocal[2], tiempoLocal[6], tiempoLocal[3], \
-                tiempoLocal[4], tiempoLocal[5], milisecond))
+    #RTC().init((year, month, mday, hour, minute, second, microsecond (no utilizada),tzinfo (no utilizada)))
+    RTC().init((tiempoLocal[0]-30, tiempoLocal[1], tiempoLocal[2], tiempoLocal[3]+ZONA_MEXICO, tiempoLocal[4], \
+                tiempoLocal[5], 0, 0))
+    print("Hora RTC:",RTC().datetime())
     print ("Fecha: {:02d}/{:02d}/{}".format(RTC().datetime()[2],
                                         RTC().datetime()[1],
                                         RTC().datetime()[0]))
@@ -536,6 +554,12 @@ while True:
   except KeyboardInterrupt:
     print("Deteniendo programa...")
     apagar_todos_leds()
+    wifi.disconnect()
+    time.sleep(1)
+    if not wifi.isconnected():
+      print("Desconectado de Blynk y WiFi")
+    else:
+      print("WiFi connected. Can't disconnect")
     break
 
   if (WATCHDOG):
