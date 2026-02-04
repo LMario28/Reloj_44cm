@@ -263,7 +263,8 @@ def desplegarEsqueleto():
     pixels[10*i-1] = color_esqueleto_horas
     pixels[10*i] = color_esqueleto_horas
     pixels[10*i+1] = color_esqueleto_horas
-  #print(f"Desplegada la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}:{RTC().datetime()[6]}")
+  if(RTC().datetime()[6]==0):
+    print(f"Desplegando la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}")
 
 #-------------------------------------------------------------------------------
 def desplegarHoraHora():
@@ -272,9 +273,19 @@ def desplegarHoraHora():
   if(hora>=12):
     hora -= 12
   ledHoraActual = map(3600 * hora + 60 * RTC().datetime()[5] + RTC().datetime()[6], 0, 43200, 0, NUMERO_LEDs_RELOJ) + 1;
-  pixels[ledHoraActual-1] = color_reloj_hora
-  pixels[ledHoraActual] = color_reloj_hora
-  pixels[ledHoraActual+1] = color_reloj_hora
+
+#   pixels[ledHoraActual-1] = color_reloj_hora
+#   pixels[ledHoraActual] = color_reloj_hora
+#   pixels[ledHoraActual+1] = color_reloj_hora
+
+  # Asegurar que los índices estén dentro del rango circular (0-119)
+  indice1 = (ledHoraActual - 1) % NUMERO_LEDs_RELOJ
+  indice2 = ledHoraActual % NUMERO_LEDs_RELOJ
+  indice3 = (ledHoraActual + 1) % NUMERO_LEDs_RELOJ
+  
+  pixels[indice1] = color_reloj_hora
+  pixels[indece2] = color_reloj_hora
+  pixels[indece3] = color_reloj_hora
 
   pixels[LEDs_HORA*redActiva + 2] = (1,1,1)
 
@@ -469,7 +480,6 @@ def proceso2():
   pass
 
 diaInicial=RTC().datetime()[2]
-opcionSeleccionadaAzar=0
 random.seed()
 banderaAnimacionEstablecida=False
 banderaReloj = True
