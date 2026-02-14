@@ -39,6 +39,7 @@ from machine import WDT
 #/                               CONSTANTES                                   //
 #///////////////////////////////////////////////////////////////////////////////
 BANDERA_DESARROLLO=True
+BANDERA_SALUDO_LED=True
 WIFI_SSID = ['INFINITUM2426_2.4','Extensor Sala','Extensor_Patio',  \
              'Electronica Hotspot PC','TP-Link_LMario']
 WIFI_PASS = ['CNnC917MDE','CNnC917MDE','CNnC917MDE',                \
@@ -105,6 +106,7 @@ DURACION_CUADRO_ANIMACIONES=5
 #///////////////////////////////////////////////////////////////////////////////
 #/                               OBJETOS                                    //
 #///////////////////////////////////////////////////////////////////////////////
+led = Pin(2, Pin.OUT)
 pixels = neopixel.NeoPixel(Pin(16, Pin.OUT), NUMERO_LEDs_RELOJ)
 from machine import RTC
 (year, month, mday, weekday, hour, minute, second, milisecond)=RTC().datetime()                
@@ -394,7 +396,13 @@ def apagar_todos_leds():
 def proceso():
   pass
 
-print("Versión del programa: 2")
+if BANDERA_SALUDO_LED:
+  for i in range(3):
+    led.value(1)
+    time.sleep(0.5)
+    led.value(0)
+    time.sleep(0.5)
+#print("Versión del programa: 2")
 
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
