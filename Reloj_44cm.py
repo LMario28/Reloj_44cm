@@ -47,6 +47,7 @@ SSID=''
 PASSWD=''
 BLYNK_AUTH = 'AeC4cVG45H4nmiq6g-nFef9-VNfJItuB'
 
+COLOR_CONEXION_BLYNK_EXITOSA=(255,255,255)
 
 NUMERO_LEDs_RELOJ=120
 PERIODO_FLASH_LED=1000
@@ -226,7 +227,7 @@ def desplegarMensajeVisual(tipLla):
   # Conexión a Blink WLAN exitosa (un parpadeo en verde brillante)
   elif(tipLla==3):
     for i in range(1):
-      pixels.fill((0,255,0))
+      pixels.fill(COLOR_CONEXION_BLYNK_EXITOSA)
       pixels.write()
       time.sleep(0.25)
       pixels.fill((0,0,0))
@@ -284,8 +285,8 @@ def desplegarHoraHora():
   indice3 = (ledHoraActual + 1) % NUMERO_LEDs_RELOJ
   
   pixels[indice1] = color_reloj_hora
-  pixels[indece2] = color_reloj_hora
-  pixels[indece3] = color_reloj_hora
+  pixels[indice2] = color_reloj_hora
+  pixels[indice3] = color_reloj_hora
 
   pixels[LEDs_HORA*redActiva + 2] = (1,1,1)
 
@@ -393,7 +394,7 @@ def apagar_todos_leds():
 def proceso():
   pass
 
-print("Versión del programa: 7")
+print("Versión del programa: 2")
 
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
