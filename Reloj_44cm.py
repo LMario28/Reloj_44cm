@@ -209,6 +209,7 @@ def desplegarMensajeVisual(tipLla):
   if(tipLla==1):
     for i in range(numeroIntentosConectarInternet):
       pixels[i] = (50,0,0)
+      print("Intento:",numeroIntentosConectarInternet)
     pixels.write()
   # Conexión a red WLAN exitosa (un parpadeo en verde opaco)
   elif(tipLla==2):
@@ -389,7 +390,7 @@ def apagar_todos_leds():
 def proceso():
   pass
 
-print("Versión del programa: 2")
+print("Versión del programa: 8")
 
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
@@ -398,8 +399,9 @@ wifi.active(True)
 wifi.connect(SSID,PASSWD)
 #if(SSID=="TP-Link_LMario"):
   #wifi.ifconfig(("192.168.40.238", "255.255.255.0", "192.168.40.1", "4.2.2.2"))
-numeroIntentosConectarInternet = 0
+numeroIntentosConectarInternet = 1
 while not wifi.isconnected():
+  desplegarMensajeVisual(1)
   time.sleep(5)
   numeroIntentosConectarInternet += 1
   if(numeroIntentosConectarInternet>120):
@@ -407,7 +409,7 @@ while not wifi.isconnected():
   if (WATCHDOG):
     wdt.feed()
   print('WiFi connect retry ...')
-print("conectado a:")
+print("Conectado a Internet en:",numeroIntentosConectarInternet,"intentos")
 print("IP:", wifi.ifconfig()[0])
 print("Netmask:", wifi.ifconfig()[1])
 print("Gateway:", wifi.ifconfig()[2])
