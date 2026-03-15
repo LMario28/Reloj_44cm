@@ -39,7 +39,6 @@ from machine import WDT
 #/                               CONSTANTES                                   //
 #///////////////////////////////////////////////////////////////////////////////
 BANDERA_DESARROLLO=True
-BANDERA_SALUDO_LED=True
 WIFI_SSID = ['INFINITUM2426_2.4','Extensor Sala','Extensor_Patio',  \
              'Electronica Hotspot PC','TP-Link_LMario']
 WIFI_PASS = ['CNnC917MDE','CNnC917MDE','CNnC917MDE',                \
@@ -48,7 +47,6 @@ SSID=''
 PASSWD=''
 BLYNK_AUTH = 'AeC4cVG45H4nmiq6g-nFef9-VNfJItuB'
 
-COLOR_CONEXION_BLYNK_EXITOSA=(0,100,100)
 
 NUMERO_LEDs_RELOJ=120
 PERIODO_FLASH_LED=1000
@@ -106,7 +104,6 @@ DURACION_CUADRO_ANIMACIONES=5
 #///////////////////////////////////////////////////////////////////////////////
 #/                               OBJETOS                                    //
 #///////////////////////////////////////////////////////////////////////////////
-led = Pin(2, Pin.OUT)
 pixels = neopixel.NeoPixel(Pin(16, Pin.OUT), NUMERO_LEDs_RELOJ)
 from machine import RTC
 (year, month, mday, weekday, hour, minute, second, milisecond)=RTC().datetime()                
@@ -210,13 +207,9 @@ def desplegarMensajeVisual(tipLla):
 #-------------------------------------------------------------------------------
   # Conexión a red WLAN fallida (un parpadeo en rojo)
   if(tipLla==1):
-    for i in range(1):
-      pixels.fill((255,0,0))
-      pixels.write()
-      time.sleep(0.25)
-      pixels.fill((0,0,0))
-      pixels.write()
-      time.sleep(0.25)
+    for i in range(numeroIntentosConectarInternet):
+      pixels[i] = (50,0,0)
+    pixels.write()
   # Conexión a red WLAN exitosa (un parpadeo en verde opaco)
   elif(tipLla==2):
     for i in range(1):
@@ -229,7 +222,7 @@ def desplegarMensajeVisual(tipLla):
   # Conexión a Blink WLAN exitosa (un parpadeo en verde brillante)
   elif(tipLla==3):
     for i in range(1):
-      pixels.fill(COLOR_CONEXION_BLYNK_EXITOSA)
+      pixels.fill((0,255,0))
       pixels.write()
       time.sleep(0.25)
       pixels.fill((0,0,0))
@@ -396,23 +389,19 @@ def apagar_todos_leds():
 def proceso():
   pass
 
-if BANDERA_SALUDO_LED:
-  for i in range(3):
-    led.value(1)
-    time.sleep(0.5)
-    led.value(0)
-    time.sleep(0.5)
-#print("Versión del programa: 2")
+print("Versión del programa: 2")
 
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
 wifi = network.WLAN(network.STA_IF)
 wifi.active(True)
 wifi.connect(SSID,PASSWD)
-if(SSID=="TP-Link_LMario"):
-  wifi.ifconfig(("192.168.40.238", "255.255.255.0", "192.168.40.1", "4.2.2.2"))
+#if(SSID=="TP-Link_LMario"):
+  #wifi.ifconfig(("192.168.40.238", "255.255.255.0", "192.168.40.1", "4.2.2.2"))
+numeroIntentosConectarInternet = 0
 while not wifi.isconnected():
   time.sleep(5)
+  numeroIntentosConectarInternet += 1
   if (WATCHDOG):
     wdt.feed()
   print('WiFi connect retry ...')
