@@ -402,6 +402,8 @@ numeroIntentosConectarInternet = 0
 while not wifi.isconnected():
   time.sleep(5)
   numeroIntentosConectarInternet += 1
+  if(numeroIntentosConectarInternet>120):
+    machine.reset()
   if (WATCHDOG):
     wdt.feed()
   print('WiFi connect retry ...')
