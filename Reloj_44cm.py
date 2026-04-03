@@ -222,9 +222,14 @@ def desplegarMensajeVisual(tipLla):
   # Conexión a red WLAN fallida (un parpadeo en rojo)
   if(tipLla==1):
     for i in range(numeroIntentosConectarInternet):
-      pixels[i] = (50,0,0)
+      for j in range(30):
+        pixels[30*(i-1)+j] = (50,0,0)
       print("Intento:",numeroIntentosConectarInternet)
     pixels.write()
+    if(numeroIntentosConectarInternet==4):
+      time.sleep(3)
+      ESP.restart()
+
   # Conexión a red WLAN exitosa (un parpadeo en verde opaco)
   elif(tipLla==2):
     for i in range(1):
@@ -499,17 +504,17 @@ def v0_write_handler_modo(value):
     color_reloj_minuto_activo = tuple(map(round,color_reloj_minuto_activo))
     color_reloj_segundo_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_ACTIVO_FASCINACION)
     color_reloj_segundo_activo = tuple(map(round,color_reloj_segundo_activo))
-  elif(diseno==1):
-    color_reloj_horas_inactivas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORAS_INACTIVAS_NEBULA)
-    color_reloj_horas_inactivas = tuple(map(round,color_reloj_horas_inactivas))
-    color_reloj_minutos_inactivos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTOS_INACTIVOS_NEBULA)
-    color_reloj_minutos_inactivos = tuple(map(round,color_reloj_minutos_inactivos))
-    color_reloj_hora_activa=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_ACTIVA_NEBULA)
-    color_reloj_hora_activa = tuple(map(round,color_reloj_hora_activa))
-    color_reloj_minuto_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_ACTIVO_NEBULA)
-    color_reloj_minuto_activo = tuple(map(round,color_reloj_minuto_activo))
-    color_reloj_segundo_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_ACTIVO_NEBULA)
-    color_reloj_segundo_activo = tuple(map(round,color_reloj_segundo_activo))
+#   elif(diseno==1):
+#     color_reloj_horas_inactivas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORAS_INACTIVAS_NEBULA)
+#     color_reloj_horas_inactivas = tuple(map(round,color_reloj_horas_inactivas))
+#     color_reloj_minutos_inactivos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTOS_INACTIVOS_NEBULA)
+#     color_reloj_minutos_inactivos = tuple(map(round,color_reloj_minutos_inactivos))
+#     color_reloj_hora_activa=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_ACTIVA_NEBULA)
+#     color_reloj_hora_activa = tuple(map(round,color_reloj_hora_activa))
+#     color_reloj_minuto_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_ACTIVO_NEBULA)
+#     color_reloj_minuto_activo = tuple(map(round,color_reloj_minuto_activo))
+#     color_reloj_segundo_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_ACTIVO_NEBULA)
+#     color_reloj_segundo_activo = tuple(map(round,color_reloj_segundo_activo))
 
   print('Nuevo valor para la variable diseño (V0):',diseno)
 
