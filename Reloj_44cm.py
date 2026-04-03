@@ -226,10 +226,6 @@ def desplegarMensajeVisual(tipLla):
       for j in range(30):
         pixels[30*i+j] = (50,0,0)
     pixels.write()
-    print("Intento:",numeroIntentosConectarInternet)
-    if(numeroIntentosConectarInternet==4):
-      time.sleep(3)
-      ESP.restart()
 
   # Conexión a red WLAN exitosa (un parpadeo en verde opaco)
   elif(tipLla==2):
@@ -422,9 +418,10 @@ wifi.connect(SSID,PASSWD)
 numeroIntentosConectarInternet = 1
 while not wifi.isconnected():
   desplegarMensajeVisual(1)
-  time.sleep(5)
+  time.sleep(3)
   numeroIntentosConectarInternet += 1
-  if(numeroIntentosConectarInternet>120):
+  print("Intento:",numeroIntentosConectarInternet)
+  if(numeroIntentosConectarInternet==4):
     machine.reset()
   if (WATCHDOG):
     wdt.feed()
