@@ -223,9 +223,9 @@ def desplegarMensajeVisual(tipLla):
   if(tipLla==1):
     for i in range(numeroIntentosConectarInternet):
       for j in range(30):
-        pixels[30*(i-1)+j] = (50,0,0)
-      print("Intento:",numeroIntentosConectarInternet)
+        pixels[30*i+j] = (50,0,0)
     pixels.write()
+    print("Intento:",numeroIntentosConectarInternet)
     if(numeroIntentosConectarInternet==4):
       time.sleep(3)
       ESP.restart()
