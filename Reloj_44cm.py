@@ -263,7 +263,7 @@ def desplegarEsqueleto():
 #-------------------------------------------------------------------------------
   # MINUTO MINUTO MINUTO
   for i in range(60):
-    pixels[2*i] = (0,1,0)
+    pixels[2*i] = color_esqueleto_minutos
 
   # HORA HORA HORA
   pixels[119] = color_esqueleto_horas
