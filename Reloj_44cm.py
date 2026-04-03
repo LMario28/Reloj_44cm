@@ -57,23 +57,22 @@ INTERVALO_BASE_ENTRE_TICKS=200                                                  
 
 # Colores Reloj
 # Facinación
+COLOR_RELOJ_HORAS_INACTIVAS_FASCINACION=(20,0,20)
+COLOR_RELOJ_MINUTOS_INACTIVOS_FASCINACION=(0,1,0)
+COLOR_RELOJ_HORA_ACTIVA_FASCINACION=(255,0,0)
+COLOR_RELOJ_MINUTO_ACTIVO_FASCINACION=(0,255,0)
+COLOR_RELOJ_SEGUNDO_ACTIVO_FASCINACION=(255,255,0)
 # COLOR_RELOJ_ESQUELETO_HORAS_MAXIMO= (20,0,20)
 # COLOR_RELOJ_ESQUELETO_MINUTOS_MAXIMO=(2,0,2)
 # COLOR_RELOJ_HORA_MAXIMO=(255,0,0)
 # COLOR_RELOJ_MINUTO_MAXIMO=(0,255,0)
 # COLOR_RELOJ_SEGUNDO_MAXIMO=(255,255,0)
 #Nebula
-# COLOR_RELOJ_ESQUELETO_HORAS_MAXIMO=(70,120,255)
-# COLOR_RELOJ_ESQUELETO_MINUTOS_MAXIMO=(18,18,18)
-# COLOR_RELOJ_HORA_MAXIMO=(255,255,255)
-# COLOR_RELOJ_MINUTO_MAXIMO=(40,110,255)
-# COLOR_RELOJ_SEGUNDO_MAXIMO=(0,220,255)
-#Nebula
-COLOR_RELOJ_ESQUELETO_HORAS_MAXIMO=(0,0,35)
-COLOR_RELOJ_ESQUELETO_MINUTOS_MAXIMO=(5,5,5)
-COLOR_RELOJ_HORA_MAXIMO=(255,255,255)
-COLOR_RELOJ_MINUTO_MAXIMO=(0,255,180)
-COLOR_RELOJ_SEGUNDO_MAXIMO=(254,50,0)
+COLOR_RELOJ_HORAS_INACTIVAS_NEBULA=(0,0,35)
+COLOR_RELOJ_MINUTOS_INACTIVOS_NEBULA=(5,5,5)
+COLOR_RELOJ_HORA_ACTIVA_NEBULA=(255,255,255)
+COLOR_RELOJ_MINUTO_ACTIVO_NEBULA=(0,255,180)
+COLOR_RELOJ_SEGUNDO_ACTIVO_NEBULA=(254,50,0)
 
 # Colores navideños
 ROJO = (255, 0, 0)
@@ -142,16 +141,18 @@ bandera_animacion_iniciada=False
 #incrementoDecremento=1
 #contadorAnimaciones=0
 factor_ajuste_brillo=1
-color_esqueleto_horas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_ESQUELETO_HORAS_MAXIMO)
-color_esqueleto_horas = tuple(map(round,color_esqueleto_horas))
-color_esqueleto_minutos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_ESQUELETO_MINUTOS_MAXIMO)
-color_esqueleto_minutos = tuple(map(round,color_esqueleto_minutos))
-color_reloj_hora=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_MAXIMO)
-color_reloj_hora = tuple(map(round,color_reloj_hora))
-color_reloj_minuto=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_MAXIMO)
-color_reloj_minuto = tuple(map(round,color_reloj_minuto))
-color_reloj_segundo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_MAXIMO)
-color_reloj_segundo = tuple(map(round,color_reloj_segundo))
+color_reloj_horas_inactivas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORAS_INACTIVAS_FASCINACION)
+color_reloj_horas_inactivas = tuple(map(round,color_reloj_horas_inactivas))
+color_reloj_minutos_inactivos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTOS_INACTIVOS_FASCINACION)
+color_reloj_minutos_inactivos = tuple(map(round,color_reloj_minutos_inactivos))
+color_reloj_hora_activa=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_ACTIVA_FASCINACION)
+color_reloj_hora_activa = tuple(map(round,color_reloj_hora_activa))
+color_reloj_minuto_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_ACTIVO_FASCINACION)
+color_reloj_minuto_activo = tuple(map(round,color_reloj_minuto_activo))
+color_reloj_segundo_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_ACTIVO_FASCINACION)
+color_reloj_segundo_activo = tuple(map(round,color_reloj_segundo_activo))
+diseno=0
+bandera_ajuste_luz_ambiental=False
 
 offset=0
 
@@ -263,16 +264,16 @@ def desplegarEsqueleto():
 #-------------------------------------------------------------------------------
   # MINUTO MINUTO MINUTO
   for i in range(60):
-    pixels[2*i] = color_esqueleto_minutos
+    pixels[2*i] = color_reloj_minutos_inactivos
 
   # HORA HORA HORA
-  pixels[119] = color_esqueleto_horas
-  pixels[0] = color_esqueleto_horas
-  pixels[1] = color_esqueleto_horas
+  pixels[119] = color_reloj_horas_inactivas
+  pixels[0] = color_reloj_horas_inactivas
+  pixels[1] = color_reloj_horas_inactivas
   for i in range(1,12):
-    pixels[10*i-1] = color_esqueleto_horas
-    pixels[10*i] = color_esqueleto_horas
-    pixels[10*i+1] = color_esqueleto_horas
+    pixels[10*i-1] = color_reloj_horas_inactivas
+    pixels[10*i] = color_reloj_horas_inactivas
+    pixels[10*i+1] = color_reloj_horas_inactivas
   if(RTC().datetime()[6]==0):
     print(f"Desplegando la hora: {RTC().datetime()[4]}:{RTC().datetime()[5]}")
 
@@ -292,10 +293,10 @@ def desplegarHoraHora():
   indice1 = (ledHoraActual - 1) % NUMERO_LEDs_RELOJ
   indice2 = ledHoraActual % NUMERO_LEDs_RELOJ
   indice3 = (ledHoraActual + 1) % NUMERO_LEDs_RELOJ
-  
-  pixels[indice1] = color_reloj_hora
-  pixels[indice2] = color_reloj_hora
-  pixels[indice3] = color_reloj_hora
+
+  pixels[indice1] = color_reloj_hora_activa
+  pixels[indice2] = color_reloj_hora_activa
+  pixels[indice3] = color_reloj_hora_activa
 
   pixels[LEDs_HORA*redActiva + 2] = (1,1,1)
 
@@ -308,14 +309,14 @@ def map(x, in_min, in_max, out_min, out_max):
 def desplegarHoraMinuto():
 #-------------------------------------------------------------------------------
   ledMinutoActual = RTC().datetime()[5] * LEDs_MINUTO
-  pixels[ledMinutoActual-1] = color_reloj_minuto
-  pixels[ledMinutoActual] = color_reloj_minuto
+  pixels[ledMinutoActual-1] = color_reloj_minuto_activo
+  pixels[ledMinutoActual] = color_reloj_minuto_activo
 
 #-------------------------------------------------------------------------------
 def desplegarHoraSegundo():
 #-------------------------------------------------------------------------------
   ledSegundoActual = RTC().datetime()[6] * LEDs_MINUTO
-  pixels[ledSegundoActual] = color_reloj_segundo
+  pixels[ledSegundoActual] = color_reloj_segundo_activo
 
 #///////////////////////////////////////////////////////////////////////////////
 #/                              LUCES NAVIDEÑAS                               //
@@ -442,6 +443,7 @@ timer = BlynkTimer()
 #///////////////////////////////////////////////////////////////////////////////
 @blynk.on("connected")
 def blynk_connected(ping):
+  blynk.sync_virtual(0,1)
   desplegarMensajeVisual(3)
   print('Blynk ready. Ping:', ping, 'ms')
   blynk.send_internal("utc","time")
@@ -479,6 +481,46 @@ def on_utc(value):
 
   banderaHoraRecuperadaBlynk=True
 
+@blynk.on("V0")
+def v0_write_handler_modo(value):
+  global diseno
+  global color_reloj_horas_inactivas,color_reloj_minutos_inactivos
+  global color_reloj_hora_activa,color_reloj_minuto_activo,color_reloj_segundo_activo
+  diseno = int(value[0])
+
+  if(diseno==0):
+    color_reloj_horas_inactivas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORAS_INACTIVAS_FASCINACION)
+    color_reloj_horas_inactivas = tuple(map(round,color_reloj_horas_inactivas))
+    color_reloj_minutos_inactivos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTOS_INACTIVOS_FASCINACION)
+    color_reloj_minutos_inactivos = tuple(map(round,color_reloj_minutos_inactivos))
+    color_reloj_hora_activa=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_ACTIVA_FASCINACION)
+    color_reloj_hora_activa = tuple(map(round,color_reloj_hora_activa))
+    color_reloj_minuto_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_ACTIVO_FASCINACION)
+    color_reloj_minuto_activo = tuple(map(round,color_reloj_minuto_activo))
+    color_reloj_segundo_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_ACTIVO_FASCINACION)
+    color_reloj_segundo_activo = tuple(map(round,color_reloj_segundo_activo))
+  elif(diseno==1):
+    color_reloj_horas_inactivas=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORAS_INACTIVAS_NEBULA)
+    color_reloj_horas_inactivas = tuple(map(round,color_reloj_horas_inactivas))
+    color_reloj_minutos_inactivos=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTOS_INACTIVOS_NEBULA)
+    color_reloj_minutos_inactivos = tuple(map(round,color_reloj_minutos_inactivos))
+    color_reloj_hora_activa=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_HORA_ACTIVA_NEBULA)
+    color_reloj_hora_activa = tuple(map(round,color_reloj_hora_activa))
+    color_reloj_minuto_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_MINUTO_ACTIVO_NEBULA)
+    color_reloj_minuto_activo = tuple(map(round,color_reloj_minuto_activo))
+    color_reloj_segundo_activo=tuple(c*factor_ajuste_brillo for c in COLOR_RELOJ_SEGUNDO_ACTIVO_NEBULA)
+    color_reloj_segundo_activo = tuple(map(round,color_reloj_segundo_activo))
+
+  print('Nuevo valor para la variable diseño (V0):',diseno)
+
+@blynk.on("V1")
+def v1_write_handler_modo(value):
+  global bandera_ajuste_luz_ambiental
+
+  bandera_ajuste_luz_ambiental = int(value[0])
+
+  print('Nuevo valor para la variable bandera_ajuste_luz_ambiental (V1):',bandera_ajuste_luz_ambiental)
+
 #///////////////////////////////////////////////////////////////////////////////
 #/                             FIN FUNCIONES BLYNK
 #///////////////////////////////////////////////////////////////////////////////
@@ -502,7 +544,7 @@ banderaReloj = True
 while not banderaHoraRecuperadaBlynk:
   blynk.run()
   timer.run()
-blynk.disconnect()
+#blynk.disconnect()
 # wifi.disconnect()
 # time.sleep(1)
 # if not wifi.isconnected():
