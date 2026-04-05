@@ -304,7 +304,7 @@ def desplegarHoraHora():
   pixels[indice2] = color_reloj_hora_activa
   pixels[indice3] = color_reloj_hora_activa
 
-  pixels[LEDs_HORA*redActiva + 2] = (1,1,1)
+  #pixels[LEDs_HORA*redActiva + 2] = (1,1,1)
 
 #-------------------------------------------------------------------------------
 def map(x, in_min, in_max, out_min, out_max):
