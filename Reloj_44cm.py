@@ -21,6 +21,10 @@
 
 # 4) Correr con al menos MicroPython v1.27
 
+BLYNK_TEMPLATE_ID="TMPL23aFohzTU"
+BLYNK_TEMPLATE_NAME="Reloj 44cm"
+BLYNK_AUTH_TOKEN="aM-5OxYKRMQV6A9dV0OYZWg7MSQN_--A"
+
 import machine
 from machine import Pin
 import neopixel
@@ -46,8 +50,6 @@ WIFI_PASS = ['CNnC917MDE','CNnC917MDE','CNnC917MDE',                \
              'electronica23','lmario28']
 SSID=''
 PASSWD=''
-BLYNK_AUTH = 'AeC4cVG45H4nmiq6g-nFef9-VNfJItuB'
-
 
 NUMERO_LEDs_RELOJ=120
 PERIODO_FLASH_LED=1000
@@ -408,15 +410,11 @@ def apagar_todos_leds():
 def proceso():
   pass
 
-print("Versión del programa: 30")
-
 seleccionarMejorRedWiFiDisponible()
 print("Connecting to WiFi network '{}'".format(SSID))
 wifi = network.WLAN(network.STA_IF)
 wifi.active(True)
 wifi.connect(SSID,PASSWD)
-#if(SSID=="TP-Link_LMario"):
-  #wifi.ifconfig(("192.168.40.238", "255.255.255.0", "192.168.40.1", "4.2.2.2"))
 numeroIntentosConectarInternet = 0
 while not wifi.isconnected():
   numeroIntentosConectarInternet += 1
@@ -437,8 +435,9 @@ print("DNS:", wifi.ifconfig()[3])
 actualizarSketch()
 
 print("Connecting to Blynk server...")
-#blynk = BlynkLib.Blynk(BLYNK_AUTH,insecure=True)             // Funciona
-blynk = BlynkLib_deepseek.Blynk(BLYNK_AUTH,server="ny3.blynk.cloud")   # Funciona
+#blynk = BlynkLib_deepseek.Blynk(BLYNK_AUTH_TOKEN,insecure=True)              #Funciona
+#blynk = BlynkLib_deepseek.Blynk(BLYNK_AUTH_TOKEN,server="ny3.blynk.cloud")   # Funciona
+blynk = BlynkLib_deepseek.Blynk(BLYNK_AUTH_TOKEN)
 
 # Create BlynkTimer Instance
 timer = BlynkTimer()
@@ -528,6 +527,8 @@ def v0_write_handler_modo(value):
     color_reloj_segundo_activo = tuple(int(d+0.5) for d in color_reloj_segundo_activo)
 
   print('Nuevo valor para la variable diseño (V0):',diseno)
+  #print(color_reloj_horas_inactivas,color_reloj_minutos_inactivos)
+  #print(color_reloj_hora_activa,color_reloj_minuto_activo,color_reloj_minuto_activo)
 
 @blynk.on("V1")
 def v1_write_handler_modo(value):
