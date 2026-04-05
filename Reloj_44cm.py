@@ -417,7 +417,7 @@ wifi.active(True)
 wifi.connect(SSID,PASSWD)
 #if(SSID=="TP-Link_LMario"):
   #wifi.ifconfig(("192.168.40.238", "255.255.255.0", "192.168.40.1", "4.2.2.2"))
-numeroIntentosConectarInternet = 1
+numeroIntentosConectarInternet = 0
 while not wifi.isconnected():
   numeroIntentosConectarInternet += 1
   print("Intento no exitoso:",numeroIntentosConectarInternet)
